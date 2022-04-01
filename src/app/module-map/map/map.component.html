@@ -1,11 +1,11 @@
 <button (click)="onStartPolygon()">Polygon</button>
 <div id="map"></div>
 <div class="modal" *ngIf="selectedPolygon">
-  Name: {{ selectedPolygon.name }}
+  <!-- Name: {{ selectedPolygon.name }} -->
   <div class="news-list">
     <div class="item">
-      <div id="twitter-timeline"></div>
-      <script>
+      <!-- <div id="twitter-timeline"></div> -->
+      <!-- <script>
         // Instantiate your widget
         (function () {
           // See https://dev.twitter.com/web/javascript/creating-widgets#create-timeline
@@ -28,10 +28,10 @@
             twttr.widgets.createTimeline(dataSource, target, options);
           });
         })();
-      </script>
+      </script> -->
     </div>
     <div class="item">
-      <iframe
+      <!-- <iframe
         id="DeepStateUA"
         style="
           border: 0px;
@@ -41,18 +41,32 @@
           box-shadow: 0 0 16px 3px rgba(0, 0, 0, 0.2);
         "
         src="https://xn--r1a.website/s/DeepStateUA"
-      ></iframe>
+      ></iframe> -->
     </div>
-    <!-- <div class="item">
+    <div class="item">
       <iframe
-        src="https://t.me/DeepStateUA/11247?embed=1"
+        [src]="transform(selectedPolygon.name + '?embed=1')"
         frameborder="0"
-        scrolling="no"
+        scrolling="yes"
         style="border: none; width: 400px; height: 400px"
       ></iframe>
-    </div> -->
-    <div class="item" *ngFor="let group of fBGroups">
+    </div>
+
+    <div class="item">
       <iframe
+        src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fzelenskiy.official%2Fposts%2F3044173479166341&width=500&show_text=true&appId=320872416386474&height=773"
+        width="400px"
+        height="400px"
+        style="border: none; overflow: hidden"
+        scrolling="true"
+        frameborder="0"
+        allowfullscreen="true"
+        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+      ></iframe>
+    </div>
+
+    <div class="item" *ngFor="let group of fBGroups">
+      <!-- <iframe
         [src]="safe(group)"
         height="500"
         style="border: none; width: 400px; height: 500px"
@@ -60,7 +74,23 @@
         frameborder="0"
         allowfullscreen="true"
         allow="autoplay; clipboard-write; encrypted-media; picture-in-picture;"
-      ></iframe>
+      ></iframe> -->
     </div>
+  </div>
+</div>
+
+<div
+  class="edit-modal"
+  *ngIf="form"
+  [ngClass]="{ 'edit-modal--active': polygonForEdit }"
+>
+  <div class="content">
+    <form [formGroup]="form" (ngSubmit)="onSavePolygon()">
+      <div class="form-control">
+        <span>Name</span>
+        <input type="text" formControlName="name" />
+      </div>
+      <button type="button">Save</button>
+    </form>
   </div>
 </div>

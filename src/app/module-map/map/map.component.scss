@@ -2,7 +2,26 @@ $c-white: white;
 $c-black: black;
 
 #map {
-  height: 500px;
+  height: 95vh;
+}
+
+.edit-modal {
+  display: none;
+  position: fixed;
+  top: 25%;
+  left: 25%;
+  right: 25%;
+  height: 40vh;
+  width: 60vw;
+  z-index: 1001;
+  background-color: $c-white;
+  border: 1px solid $c-black;
+  border-radius: 1rem;
+  padding: 1rem;
+
+  &--active {
+    display: block;
+  }
 }
 
 .modal {
@@ -27,4 +46,10 @@ $c-black: black;
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
+}
+
+.form-control {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
 }
