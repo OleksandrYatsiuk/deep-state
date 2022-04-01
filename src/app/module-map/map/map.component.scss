@@ -1,0 +1,30 @@
+$c-white: white;
+$c-black: black;
+
+#map {
+  height: 500px;
+}
+
+.modal {
+  position: fixed;
+  top: 2rem;
+  right: 1rem;
+  height: 80vh;
+  width: 420px;
+  background-color: $c-white;
+  border: 1px solid $c-black;
+  border-radius: 1rem;
+  padding: 1rem;
+  z-index: 1001;
+  overflow-y: auto;
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+
+  .item {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}

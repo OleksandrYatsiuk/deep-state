@@ -1,0 +1,66 @@
+<button (click)="onStartPolygon()">Polygon</button>
+<div id="map"></div>
+<div class="modal" *ngIf="selectedPolygon">
+  Name: {{ selectedPolygon.name }}
+  <div class="news-list">
+    <div class="item">
+      <div id="twitter-timeline"></div>
+      <script>
+        // Instantiate your widget
+        (function () {
+          // See https://dev.twitter.com/web/javascript/creating-widgets#create-timeline
+          var dataSource = {
+            sourceType: "profile",
+            screenName: "twitterdev",
+          };
+
+          // Your HTML element's ID
+          var target = document.getElementById("twitter-timeline");
+
+          // See https://dev.twitter.com/web/embedded-timelines/parameters
+          var options = {
+            chrome: "nofooter",
+            height: 800,
+            width: 500,
+          };
+
+          twttr.ready(function (twttr) {
+            twttr.widgets.createTimeline(dataSource, target, options);
+          });
+        })();
+      </script>
+    </div>
+    <div class="item">
+      <iframe
+        id="DeepStateUA"
+        style="
+          border: 0px;
+          height: 500px;
+          width: 400px;
+          margin: 5px;
+          box-shadow: 0 0 16px 3px rgba(0, 0, 0, 0.2);
+        "
+        src="https://xn--r1a.website/s/DeepStateUA"
+      ></iframe>
+    </div>
+    <!-- <div class="item">
+      <iframe
+        src="https://t.me/DeepStateUA/11247?embed=1"
+        frameborder="0"
+        scrolling="no"
+        style="border: none; width: 400px; height: 400px"
+      ></iframe>
+    </div> -->
+    <div class="item" *ngFor="let group of fBGroups">
+      <iframe
+        [src]="safe(group)"
+        height="500"
+        style="border: none; width: 400px; height: 500px"
+        scrolling="no"
+        frameborder="0"
+        allowfullscreen="true"
+        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture;"
+      ></iframe>
+    </div>
+  </div>
+</div>
