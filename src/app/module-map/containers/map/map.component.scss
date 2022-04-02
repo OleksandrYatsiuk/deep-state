@@ -37,19 +37,3 @@ $c-black: black;
   z-index: 1001;
   overflow-y: auto;
 }
-
-.news-list {
-  display: flex;
-  flex-direction: column;
-
-  .item {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  }
-}
-
-.form-control {
-  display: flex;
-  flex-direction: column;
-  margin: 5px;
-}

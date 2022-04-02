@@ -1,0 +1,6 @@
+<button (click)="onStartPolygon()" pButton>Polygon</button>
+
+<div id="map"></div>
+<div class="modal" *ngIf="selectedPolygon">
+  <app-post [territoryId]="selectedPolygon.id"></app-post>
+</div>

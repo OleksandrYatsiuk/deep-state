@@ -4,8 +4,11 @@ import * as L from 'leaflet';
 import 'leaflet-editable';
 import { TerritoryService } from 'src/app/core/services/territory.service';
 import { Territory } from 'src/app/core/interfaces/territory.interface';
-import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { SafeResourceUrl } from '@angular/platform-browser';
+import { FormGroup } from '@angular/forms';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { EditTerritoryDialogComponent } from '../../components/edit-territory-dialog/edit-territory-dialog.component';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -23,13 +26,13 @@ export class MapComponent implements OnInit {
   fBGroups = ['GeneralStaff.ua', 'EastOC', 'pressOKzahid', 'kommander.nord', 'okPivden']
   groups: SafeResourceUrl[];
   form: FormGroup;
+  ref: DynamicDialogRef;
 
   constructor(
     private _mapService: MapService,
     private _territoryService: TerritoryService,
     private _cd: ChangeDetectorRef,
-    private _domSanitizer: DomSanitizer,
-    private _formBuilder: FormBuilder
+    private _dialogService: DialogService
   ) { }
 
 
@@ -40,11 +43,12 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._territoryService.queryTerritories().subscribe(territories => {
-      this.map = this._mapService.initMap('map');
-      this._initTerritories(territories);
-      this._cd.detectChanges();
-    });
+    this._territoryService.queryTerritories()
+      .subscribe(territories => {
+        this.map = this._mapService.initMap('map');
+        this._initTerritories(territories);
+        this._cd.detectChanges();
+      });
   }
 
   onStartPolygon(): void {
@@ -53,18 +57,11 @@ export class MapComponent implements OnInit {
 
     polygon.addTo(this.map);
 
-    polygon.on('editable:drawing:cancel', (e) => {
-    })
-
     polygon.on('dblclick', ({ target }: L.LeafletMouseEvent) => {
       const pol: L.Polygon = target;
-      const coords = pol.toGeoJSON().geometry.coordinates[0];
-
-      pol.setStyle({ color: 'green' });
       pol.enableEdit();
 
-      this._initForm(coords as any);
-      this.polygonForEdit = polygon;
+      this._onEditTerritory(pol);
       this._cd.detectChanges();
     })
   }
@@ -82,46 +79,25 @@ export class MapComponent implements OnInit {
       polygon.on('click', ({ target }: L.LeafletMouseEvent) => {
         const pol: L.Polygon = target;
         pol.editEnabled();
+        this.selectedPolygon = t;
         this._cd.detectChanges();
 
       })
       polygon.on('dblclick', ({ target }: L.LeafletMouseEvent) => {
         const pol: L.Polygon = target;
-
-        const coords = pol.toGeoJSON().geometry.coordinates;
-
-        this.selectedPolygon = t;
-        this._initForm(coords as any);
+        this._onEditTerritory(pol, t);
         this._cd.detectChanges();
-
       })
     })
   }
 
-  safe(code: string): SafeHtml {
-    const url = this._domSanitizer.bypassSecurityTrustResourceUrl(`https://www.facebook.com/plugins/page.php?href=https://www.facebook.com/${code}&tabs=timeline&height=500&width=400px&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=false&hide_cta=true`);
-    return url;
-  }
-
-  transform(url: string): SafeHtml {
-    return this._domSanitizer.bypassSecurityTrustResourceUrl(url)
-  }
-
-  onSavePolygon(): void {
-    this.form.markAllAsTouched();
-    if (this.form.valid) {
-      this._territoryService.queryCreateTerritory(this.form.value)
-        .subscribe();
-    }
-  }
-
-  private _initForm(coords: number[][]): void {
-
-    this.form = this._formBuilder.group({
-      name: ['', []],
-      coords: [coords, []],
-      styles: [{}, []]
+  private _onEditTerritory(polygon: L.Polygon, territory?: Territory): void {
+    this.ref = this._dialogService.open(EditTerritoryDialogComponent, {
+      header: territory ? 'Редагувати територію' : 'Додати територію',
+      closeOnEscape: false,
+      width: '350px',
+      data: { polygon, territory }
     })
+    this.ref.onClose.pipe(filter(result => result)).subscribe();
   }
-
 }

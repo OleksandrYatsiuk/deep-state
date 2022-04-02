@@ -1,0 +1,52 @@
+<div class="news" *ngIf="posts$ | async as posts">
+  <button pButton label="Додати новину" (click)="onAddPost()"></button>
+  <ng-container *ngIf="posts.length > 0; else empty">
+    <div class="news__card" *ngFor="let item of posts">
+      <ng-container [ngSwitch]="item.type">
+        <ng-container *ngSwitchCase="postType.Facebook">
+          <iframe
+            [src]="
+              'https://www.facebook.com/plugins/post.php?href=' +
+                item.link +
+                '&show_text=true' | sanitize: 'resource'
+            "
+            width="350px"
+            height="400px"
+            style="border: none; overflow: hidden"
+            scrolling="true"
+            frameborder="0"
+            allowfullscreen="true"
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+          ></iframe>
+        </ng-container>
+        <ng-container *ngSwitchCase="postType.Telegram">
+          <!-- Channel list -->
+          <!-- <iframe
+        id="DeepStateUA"
+        style="
+          border: 0px;
+          height: 500px;
+          width: 400px;
+          margin: 5px;
+          box-shadow: 0 0 16px 3px rgba(0, 0, 0, 0.2);
+        "
+        src="https://xn--r1a.website/s/DeepStateUA"
+      ></iframe> -->
+
+          <!-- Simple Post -->
+          <iframe
+            [src]="item.link + '?embed=1' | sanitize: 'resource'"
+            frameborder="0"
+            scrolling="yes"
+            style="border: none; width: 350px; height: 400px"
+          ></iframe>
+        </ng-container>
+        <ng-container *ngSwitchCase="postType.Twitter"></ng-container>
+      </ng-container>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #empty>
+  <div>Not Records Found</div>
+</ng-template>

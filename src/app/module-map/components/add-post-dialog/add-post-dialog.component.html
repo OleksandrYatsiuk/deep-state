@@ -1,0 +1,16 @@
+<form [formGroup]="form" (ngSubmit)="onSavePost()">
+  <div class="form-control">
+    <span>Тип новини</span>
+    <p-dropdown
+      [options]="types"
+      formControlName="type"
+      appendTo="body"
+    ></p-dropdown>
+  </div>
+
+  <div class="form-control">
+    <span>Посилання</span>
+    <input type="text" pInputText formControlName="link" />
+  </div>
+  <button pButton label="Зберегти"></button>
+</form>

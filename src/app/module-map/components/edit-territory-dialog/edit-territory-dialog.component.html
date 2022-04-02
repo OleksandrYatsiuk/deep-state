@@ -1,0 +1,7 @@
+<form [formGroup]="form" (ngSubmit)="onSaveTerritory()">
+  <div class="form-control">
+    <span>Назва</span>
+    <input type="text" pInputText formControlName="name" />
+  </div>
+  <button pButton label="Зберегти"></button>
+</form>

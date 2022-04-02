@@ -1,0 +1,7 @@
+.news {
+  display: grid;
+  text-align: center;
+  &__card {
+    margin: 1rem 0;
+  }
+}
