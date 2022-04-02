@@ -9,7 +9,9 @@ import { EditTerritoryDialogComponent } from './components/edit-territory-dialog
 import { InputTextModule } from 'primeng/inputtext'
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AddPostDialogComponent } from './components/add-post-dialog/add-post-dialog.component';
+import { DialogModule } from 'primeng/dialog';
 
 const routes: Routes = [
   { path: '', component: MapComponent }
@@ -29,6 +31,8 @@ const routes: Routes = [
     InputTextModule,
     DropdownModule,
     ButtonModule,
+    AutoCompleteModule,
+    DialogModule,
     RouterModule.forChild(routes)
   ]
 })

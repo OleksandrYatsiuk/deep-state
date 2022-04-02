@@ -6,9 +6,8 @@ import 'leaflet-editable';
 
 export class MapService {
     isBrowser: boolean;
-    private _lf: any = null;
     private _map: L.Map;
-    private _zoom = 11.5;
+    private _zoom = 8;
     private _markers: {
         marker: L.Marker;
         data: any;
@@ -24,9 +23,17 @@ export class MapService {
         this._map = L.map(container, {
             zoom: this._zoom,
             ...options,
+            doubleClickZoom: false,
+            zoomControl: false,
             editable: true,
             center: options?.center ? options.center : this._center
         });
+
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(this._map);
+
+
         this._initOpenStreetMap();
 
         return this._map;

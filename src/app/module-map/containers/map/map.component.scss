@@ -3,6 +3,17 @@ $c-black: black;
 
 #map {
   height: 95vh;
+  position: relative;
+}
+.map {
+  &__options {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 1000;
+    display: grid;
+    grid-row-gap: 0.5rem;
+  }
 }
 
 .edit-modal {

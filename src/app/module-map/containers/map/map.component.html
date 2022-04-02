@@ -1,6 +1,51 @@
-<button (click)="onStartPolygon()" pButton>Polygon</button>
-
-<div id="map"></div>
-<div class="modal" *ngIf="selectedPolygon">
-  <app-post [territoryId]="selectedPolygon.id"></app-post>
+<div id="map">
+  <div class="map__options">
+    <p-autoComplete
+      [placeholder]="'Пошук'"
+      [suggestions]="results$ | async"
+      (completeMethod)="search($event)"
+      (onSelect)="onSelectCity($event)"
+      [delay]="500"
+      [showEmptyMessage]="true"
+      field="display_name"
+    ></p-autoComplete>
+    <p-button
+      icon="pi pi-pencil"
+      label="Polygon"
+      (click)="onStartPolygon()"
+    ></p-button>
+  </div>
 </div>
+
+<p-dialog
+  header="Новини"
+  position="right"
+  [(visible)]="displayPosts"
+  [title]="selectedTerritory?.name"
+>
+  <app-post [territoryId]="selectedTerritory?.id"></app-post>
+</p-dialog>
+
+<p-dialog
+  header="Title"
+  position="top"
+  [(visible)]="display"
+  [title]="selectedTerritory?.name"
+>
+  <p-button
+    icon="pi pi-pencil"
+    label="Деталі території"
+    (click)="onEditTerritory(selectedPolygon, selectedTerritory)"
+  ></p-button>
+  <p-button
+    icon="pi pi-pencil"
+    label="Границя"
+    (click)="onEditPolygon(selectedPolygon)"
+  ></p-button>
+  <p-button
+    icon="pi pi-pencil"
+    label="Новини"
+    (click)="showPosts()"
+    [disabled]="selectedTerritory ? false : true"
+  ></p-button>
+</p-dialog>
