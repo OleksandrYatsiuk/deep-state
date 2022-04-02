@@ -30,6 +30,10 @@ export class PostsService {
         return this._http.get<Post[]>(`${this._path}/${territoryId}`);
     }
 
+    queryAllPosts(): Observable<Post[]> {
+        return this._http.get<Post[]>(this._path);
+    }
+
     queryPost(id: string): Observable<Post> {
         return this._http.get<Post>(`${this._path}/${id}`);
     }

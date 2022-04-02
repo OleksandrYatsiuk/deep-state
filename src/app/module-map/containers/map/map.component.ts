@@ -122,7 +122,7 @@ export class MapComponent implements OnInit {
   }
 
   showPosts(): void {
-    this.displayPosts = true;
+    this.displayPosts = !this.displayPosts;
     this.display = false;
   }
 }

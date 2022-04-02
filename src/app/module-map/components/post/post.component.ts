@@ -23,7 +23,7 @@ export class PostComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.posts$ = this._postsService.queryPosts(this.territoryId);
+    this.posts$ = this._queryPosts(this.territoryId);
   }
 
   ngOnInit(): void {
@@ -37,10 +37,17 @@ export class PostComponent implements OnInit, OnChanges {
     });
 
     ref.onClose.pipe(filter(result => result)).subscribe(() => {
-      this.posts$ = this._postsService.queryPosts(this.territoryId);
+      this.posts$ = this._queryPosts(this.territoryId);
       this._cd.detectChanges();
     });
 
+  }
+
+  private _queryPosts(territoryId?: string): Observable<Post[]> {
+    if (territoryId) {
+      return this._postsService.queryPosts(territoryId);
+    }
+    return this._postsService.queryAllPosts();
   }
 
 }
