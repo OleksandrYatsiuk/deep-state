@@ -28,7 +28,7 @@ export class AddPostDialogComponent implements OnInit {
     this.types = [
       { label: EPost.Telegram, value: EPost.Telegram },
       { label: EPost.Facebook, value: EPost.Facebook },
-      { label: EPost.Twitter, value: EPost.Twitter, disabled: true },
+      { label: EPost.Twitter, value: EPost.Twitter },
       { label: EPost.Custom, value: EPost.Custom, disabled: true },
     ];
   }

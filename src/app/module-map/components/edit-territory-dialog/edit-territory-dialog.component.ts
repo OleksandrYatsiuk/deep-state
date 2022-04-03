@@ -15,6 +15,7 @@ import { TerritoryService } from 'src/app/core/services/territory.service';
 })
 export class EditTerritoryDialogComponent implements OnInit {
   form: FormGroup;
+  colors: SelectItem[];
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -25,6 +26,14 @@ export class EditTerritoryDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this._initForm(this.territory);
+
+    this.colors = [
+      { value: '#3B82F6', label: 'blue' },
+      { value: '#d75656', label: 'red' },
+      { value: '#2b2b2da3', label: 'gray' },
+      { value: '#911212', label: 'dark-red' },
+
+    ];
   }
 
   private _initForm(territory?: Territory): void {
@@ -32,7 +41,9 @@ export class EditTerritoryDialogComponent implements OnInit {
       id: territory?.id,
       name: [territory?.name || '', [Validators.required]],
       coords: [this._getCoordinates(this.polygon), []],
-      styles: [territory?.styles || {}, []]
+      styles: this._formBuilder.group({
+        color: [territory?.styles['color'] || "", []]
+      })
     });
 
   }
@@ -51,6 +62,10 @@ export class EditTerritoryDialogComponent implements OnInit {
 
   get polygon(): Polygon {
     return this._config.data?.polygon;
+  }
+
+  get styles(): FormGroup {
+    return this.form.get('styles') as FormGroup;
   }
 
   private _getCoordinates(polygon: Polygon): number[][] {

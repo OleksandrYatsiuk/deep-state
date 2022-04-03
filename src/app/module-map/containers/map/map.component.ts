@@ -4,7 +4,7 @@ import * as L from 'leaflet';
 import 'leaflet-editable';
 import { TerritoryService } from 'src/app/core/services/territory.service';
 import { Territory } from 'src/app/core/interfaces/territory.interface';
-import { SafeResourceUrl } from '@angular/platform-browser';
+import { SafeResourceUrl, Title } from '@angular/platform-browser';
 import { FormGroup } from '@angular/forms';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EditTerritoryDialogComponent } from '../../components/edit-territory-dialog/edit-territory-dialog.component';
@@ -22,6 +22,7 @@ export class MapComponent implements OnInit {
   territories: Territory[];
   display = false;
   displayPosts = false;
+  displayInfo = false;
 
   selectedPolygon: L.Polygon;
   selectedTerritory: Territory
@@ -37,7 +38,8 @@ export class MapComponent implements OnInit {
     private _territoryService: TerritoryService,
     private _cd: ChangeDetectorRef,
     private _dialogService: DialogService,
-    private _nominatimService: NominatimService
+    private _nominatimService: NominatimService,
+    private _title: Title
   ) { }
 
 
@@ -48,6 +50,7 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this._title.setTitle('DeepStateMAP | Мапа війни в Україні');
     this._territoryService.queryTerritories()
       .subscribe(territories => {
         this.map = this._mapService.initMap('map');
@@ -77,6 +80,8 @@ export class MapComponent implements OnInit {
       t.coords = t.coords.map(c => c.reverse());
       const polygon = L.polygon(t.coords as any);
       polygon.setStyle(t.styles);
+
+      polygon.bindTooltip(t.name);
 
       polygon.addTo(this.map);
 
@@ -122,7 +127,13 @@ export class MapComponent implements OnInit {
   }
 
   showPosts(): void {
+    this.selectedPolygon = null;
+    this.selectedTerritory = null;
     this.displayPosts = !this.displayPosts;
     this.display = false;
+  }
+
+  showInfo(): void {
+    this.displayInfo = !this.displayInfo;
   }
 }

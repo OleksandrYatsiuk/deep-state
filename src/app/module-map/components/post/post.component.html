@@ -7,8 +7,7 @@
           <iframe
             [src]="
               'https://www.facebook.com/plugins/post.php?href=' +
-                item.link +
-                '&show_text=true' | sanitize: 'resource'
+                encodeURIComponent(item.link) | sanitize: 'resource'
             "
             width="350px"
             height="400px"
@@ -16,7 +15,7 @@
             scrolling="true"
             frameborder="0"
             allowfullscreen="true"
-            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
           ></iframe>
         </ng-container>
         <ng-container *ngSwitchCase="postType.Telegram">
@@ -41,7 +40,17 @@
             style="border: none; width: 350px; height: 400px"
           ></iframe>
         </ng-container>
-        <ng-container *ngSwitchCase="postType.Twitter"></ng-container>
+        <ng-container *ngSwitchCase="postType.Twitter">
+          <iframe
+            frameborder="0"
+            width="370px"
+            height="400px"
+            [src]="
+              'https://twitframe.com/show?url=' + encodeURIComponent(item.link)
+                | sanitize: 'resource'
+            "
+          ></iframe>
+        </ng-container>
       </ng-container>
     </div>
   </ng-container>

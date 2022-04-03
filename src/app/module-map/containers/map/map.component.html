@@ -1,5 +1,5 @@
 <div id="map">
-  <div class="map__options">
+  <div class="map__options map__options--left">
     <p-autoComplete
       [placeholder]="'Пошук'"
       [suggestions]="results$ | async"
@@ -19,12 +19,29 @@
       label="Всі новини"
       (click)="showPosts()"
     ></p-button>
+    <a href="https://t.me/DeepStateUA" target="_blank" class="logo__container">
+      <img
+        src="/assets/images/logo.png"
+        class="logo"
+        alt="Deep State Ukraine"
+      />
+    </a>
+  </div>
+  <div class="map__options map__options--right">
+    <button
+      pButton
+      pRipple
+      type="button"
+      icon="pi pi-info"
+      class="p-button-rounded"
+      (click)="showInfo()"
+    ></button>
   </div>
 </div>
 
 <p-dialog
   header="Новини"
-  position="right"
+  position="bottom-right"
   [(visible)]="displayPosts"
   [title]="selectedTerritory?.name"
 >
@@ -32,10 +49,9 @@
 </p-dialog>
 
 <p-dialog
-  header="Title"
+  [header]="selectedTerritory?.name||'Не збережена територія'"
   position="top"
   [(visible)]="display"
-  [title]="selectedTerritory?.name"
 >
   <p-button
     icon="pi pi-pencil"
@@ -48,9 +64,47 @@
     (click)="onEditPolygon(selectedPolygon)"
   ></p-button>
   <p-button
-    icon="pi pi-pencil"
+    icon="pi pi-send"
     label="Новини"
     (click)="showPosts()"
     [disabled]="selectedTerritory ? false : true"
   ></p-button>
+</p-dialog>
+
+<p-dialog header="Карта DeepState" position="bottom" [(visible)]="displayInfo">
+  <div class="info">
+    <div class="info__section">
+      <ul>
+        Контакти
+        <li>
+          <a href="https://t.me/DeepStateUA" target="_blank"
+            >Telegram канал: DeepState</a
+          >
+        </li>
+        <li>
+          <a href="https://t.me/newsDeepStatebot" target="_blank"
+            >Повідомити новину / Submit info</a
+          >
+        </li>
+      </ul>
+    </div>
+    <div class="info__section">
+      <ul>
+        Легенда карти
+
+        <li>Червоні ділянки - захоплені кацапами</li>
+        <li>Сині ділянки - території, звідки кацапів вибито</li>
+        <li>Сірі ділянки - території Криму і ОРДЛО</li>
+        <li>Темно-червона ділянка - Придністров'я</li>
+      </ul>
+    </div>
+
+    <div class="info__section">
+      <p class="info__message">
+        В жодному разі не використовуйте карту для прокладання безпечних
+        маршрутів, натомість користуйтеся зеленими коридорами, котрі пропонує
+        влада.
+      </p>
+    </div>
+  </div>
 </p-dialog>

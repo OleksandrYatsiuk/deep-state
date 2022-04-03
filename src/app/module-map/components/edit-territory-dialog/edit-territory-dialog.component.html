@@ -3,5 +3,23 @@
     <span>Назва</span>
     <input type="text" pInputText formControlName="name" />
   </div>
+  <div formGroupName="styles">
+    <div class="form-control">
+      <span>Колір</span>
+      <p-dropdown [options]="colors" appendTo="body" formControlName="color">
+        <ng-template pTemplate="selectedItem" let-color>
+          <div
+            class="item"
+            [ngStyle]="{ 'background-color': color.value }"
+          ></div>
+        </ng-template>
+        <ng-template let-color pTemplate="item">
+          <div
+            class="item"
+            [ngStyle]="{ 'background-color': color.value }"
+          ></div> </ng-template
+      ></p-dropdown>
+    </div>
+  </div>
   <button pButton label="Зберегти"></button>
 </form>

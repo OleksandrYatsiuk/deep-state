@@ -50,4 +50,8 @@ export class PostComponent implements OnInit, OnChanges {
     return this._postsService.queryAllPosts();
   }
 
+  encodeURIComponent(link: string): string {
+    return encodeURIComponent(link);
+  }
+
 }

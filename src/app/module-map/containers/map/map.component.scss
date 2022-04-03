@@ -9,42 +9,37 @@ $c-black: black;
   &__options {
     position: absolute;
     top: 0.5rem;
-    left: 0.5rem;
+
     z-index: 1000;
     display: grid;
     grid-row-gap: 0.5rem;
+
+    &--left {
+      left: 0.5rem;
+    }
+    &--right {
+      right: 0.5rem;
+    }
   }
 }
 
-.edit-modal {
-  display: none;
-  position: fixed;
-  top: 25%;
-  left: 25%;
-  right: 25%;
-  height: 40vh;
-  width: 60vw;
-  z-index: 1001;
-  background-color: $c-white;
-  border: 1px solid $c-black;
-  border-radius: 1rem;
-  padding: 1rem;
+.info {
+  &__section {
+    display: grid;
+    margin-top: 0.5rem;
+  }
+  display: flex;
+  flex-direction: column;
 
-  &--active {
-    display: block;
+  &__message {
+    color: red;
   }
 }
+.logo{
+  width: auto;
+  height: 65px;
+  opacity: 0.7;
+  &__container {
 
-.modal {
-  position: fixed;
-  top: 2rem;
-  right: 1rem;
-  height: 80vh;
-  width: 420px;
-  background-color: $c-white;
-  border: 1px solid $c-black;
-  border-radius: 1rem;
-  padding: 1rem;
-  z-index: 1001;
-  overflow-y: auto;
+  }
 }
