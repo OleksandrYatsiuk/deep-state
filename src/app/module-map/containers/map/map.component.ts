@@ -10,6 +10,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EditTerritoryDialogComponent } from '../../components/edit-territory-dialog/edit-territory-dialog.component';
 import { filter, Observable } from 'rxjs';
 import { NominatimService } from 'src/app/core/services/nominatim.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-map',
@@ -39,13 +40,14 @@ export class MapComponent implements OnInit {
     private _cd: ChangeDetectorRef,
     private _dialogService: DialogService,
     private _nominatimService: NominatimService,
-    private _title: Title
+    private _title: Title,
+    private _messageService: MessageService
   ) { }
 
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-    this.map.editTools.stopDrawing();
-    this.selectedPolygon = null;
+    this.cancelDrawing();
+    this._unSelect();
     this._cd.detectChanges();
   }
 
@@ -73,13 +75,27 @@ export class MapComponent implements OnInit {
       this.selectedTerritory = null;
       this._cd.detectChanges();
     })
+    polygon.on('editable:drawing:end', () => {
+      const coordinates = polygon.toGeoJSON().geometry.coordinates[0];
+
+      if (coordinates.length > 2) {
+        this.selectedPolygon = polygon;
+        this.onEditTerritory(polygon);
+      } else {
+        polygon.remove();
+      }
+
+      this._cd.detectChanges();
+    });
   }
 
   private _initTerritories(territories: Territory[]): void {
     territories.forEach(t => {
       t.coords = t.coords.map(c => c.reverse());
       const polygon = L.polygon(t.coords as any);
-      polygon.setStyle(t.styles);
+      if (Object.keys(t.styles).length) {
+        polygon.setStyle(t.styles);
+      }
 
       polygon.bindTooltip(t.name);
 
@@ -98,6 +114,7 @@ export class MapComponent implements OnInit {
       polygon.on('mouseover', ({ target }: { target: L.Polygon }) => {
         this._cd.detectChanges();
       })
+
     })
   }
 
@@ -108,8 +125,13 @@ export class MapComponent implements OnInit {
       width: '350px',
       data: { polygon, territory }
     })
-    this.ref.onClose.pipe(filter(result => result)).subscribe(() => {
+    this.ref.onClose.pipe(filter(result => result)).subscribe((territory: Territory) => {
       polygon.disableEdit();
+      polygon.setStyle(territory.styles);
+      polygon.bindTooltip(territory.name);
+
+      this._messageService.add({ severity: 'success', detail: 'Оновлення території було успішним!' })
+      this._unSelect();
       this._cd.detectChanges();
     });
   }
@@ -127,13 +149,38 @@ export class MapComponent implements OnInit {
   }
 
   showPosts(): void {
-    this.selectedPolygon = null;
-    this.selectedTerritory = null;
     this.displayPosts = !this.displayPosts;
     this.display = false;
   }
 
+  showAllPosts(): void {
+    this._unSelect();
+    this.showPosts();
+  }
+
   showInfo(): void {
     this.displayInfo = !this.displayInfo;
+  }
+
+  removeTerritory(): void {
+    if (this.selectedTerritory) {
+      this._territoryService.queryTerritoryDelete(this.selectedTerritory.id)
+        .subscribe(() => {
+          this.selectedPolygon.remove();
+          this._unSelect();
+          this.display = false;
+          this._messageService.add({ severity: 'success', detail: 'Видалення території було успішним!' })
+          this._cd.detectChanges();
+        });
+    }
+  }
+
+  cancelDrawing(): void {
+    this.map.editTools.stopDrawing();
+  }
+
+  private _unSelect(): void {
+    this.selectedPolygon = null;
+    this.selectedTerritory = null;
   }
 }

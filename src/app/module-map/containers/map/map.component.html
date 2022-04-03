@@ -17,7 +17,7 @@
     <p-button
       icon="pi pi-send"
       label="Всі новини"
-      (click)="showPosts()"
+      (click)="showAllPosts()"
     ></p-button>
     <a href="https://t.me/DeepStateUA" target="_blank" class="logo__container">
       <img
@@ -32,7 +32,7 @@
       pButton
       pRipple
       type="button"
-      icon="pi pi-info"
+      icon="pi pi-info-circle"
       class="p-button-rounded"
       (click)="showInfo()"
     ></button>
@@ -49,13 +49,13 @@
 </p-dialog>
 
 <p-dialog
-  [header]="selectedTerritory?.name||'Не збережена територія'"
+  [header]="selectedTerritory?.name || 'Не збережена територія'"
   position="top"
   [(visible)]="display"
 >
   <p-button
-    icon="pi pi-pencil"
-    label="Деталі території"
+    icon="pi pi-palette"
+    label="Редагування території"
     (click)="onEditTerritory(selectedPolygon, selectedTerritory)"
   ></p-button>
   <p-button
@@ -68,6 +68,12 @@
     label="Новини"
     (click)="showPosts()"
     [disabled]="selectedTerritory ? false : true"
+  ></p-button>
+  <p-button
+    icon="pi pi-trash"
+    label="Видалити"
+    *ngIf="selectedTerritory"
+    (click)="removeTerritory()"
   ></p-button>
 </p-dialog>
 

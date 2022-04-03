@@ -4,7 +4,6 @@ import { Polygon } from 'leaflet';
 import { SelectItem } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable } from 'rxjs';
-import { EPost } from 'src/app/core/enums/post.enum';
 import { CreateTerritory, Territory, UpdateTerritory } from 'src/app/core/interfaces/territory.interface';
 import { TerritoryService } from 'src/app/core/services/territory.service';
 
@@ -15,7 +14,12 @@ import { TerritoryService } from 'src/app/core/services/territory.service';
 })
 export class EditTerritoryDialogComponent implements OnInit {
   form: FormGroup;
-  colors: SelectItem[];
+  colors: SelectItem[] = [
+    { value: '#3B82F6', label: 'blue' },
+    { value: '#d75656', label: 'red' },
+    { value: '#2b2b2da3', label: 'gray' },
+    { value: '#911212', label: 'dark-red' }
+  ]
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -26,14 +30,6 @@ export class EditTerritoryDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this._initForm(this.territory);
-
-    this.colors = [
-      { value: '#3B82F6', label: 'blue' },
-      { value: '#d75656', label: 'red' },
-      { value: '#2b2b2da3', label: 'gray' },
-      { value: '#911212', label: 'dark-red' },
-
-    ];
   }
 
   private _initForm(territory?: Territory): void {
@@ -42,9 +38,10 @@ export class EditTerritoryDialogComponent implements OnInit {
       name: [territory?.name || '', [Validators.required]],
       coords: [this._getCoordinates(this.polygon), []],
       styles: this._formBuilder.group({
-        color: [territory?.styles['color'] || "", []]
+        color: [territory?.styles['color'] || this.colors[0]?.value, []]
       })
     });
+    console.log(this.form);
 
   }
 
@@ -52,7 +49,7 @@ export class EditTerritoryDialogComponent implements OnInit {
     this.form.markAllAsTouched();
     if (this.form.valid) {
       this._queryManageTerritory(this.form.value)
-        .subscribe(() => this._ref.close(true));
+        .subscribe((territory) => this._ref.close(territory));
     }
   }
 
@@ -70,7 +67,7 @@ export class EditTerritoryDialogComponent implements OnInit {
 
   private _getCoordinates(polygon: Polygon): number[][] {
     const coords = polygon.toGeoJSON().geometry.coordinates[0] as number[][];
-    return coords.map(c => c.sort());
+    return coords?.map(c => c.sort());
   }
 
   private _queryManageTerritory(data: CreateTerritory | UpdateTerritory): Observable<Territory> {
