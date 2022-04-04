@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: 'https://api-dominos.herokuapp.com',
+  // apiUrl: 'http://localhost:3000',
   mapUrl: 'https://nominatim.openstreetmap.org'
 
 };

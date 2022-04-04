@@ -35,10 +35,10 @@ export class EditTerritoryDialogComponent implements OnInit {
   private _initForm(territory?: Territory): void {
     this.form = this._formBuilder.group({
       id: territory?.id,
-      name: [territory?.name || '', [Validators.required]],
+      name: [territory?.details?.name || '', [Validators.required]],
       coords: [this._getCoordinates(this.polygon), []],
       styles: this._formBuilder.group({
-        color: [territory?.styles['color'] || this.colors[0]?.value, []]
+        color: [territory?.details?.styles['color'] || this.colors[0]?.value, []]
       })
     });
     console.log(this.form);

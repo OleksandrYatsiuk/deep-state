@@ -59,7 +59,8 @@ export class MapComponent implements OnInit {
   ngOnInit(): void {
     this._title.setTitle('DeepStateMAP | Мапа війни в Україні');
     this.map = this._mapService.initMap('map');
-    this._initTerritoriesFromGeoJson(1649005166);
+    this._initTerritoriesFromGeoJson(1649098980);
+    // this._initTerritoriesFromDataBase();
   }
 
   onStartPolygon(): void {
@@ -100,8 +101,8 @@ export class MapComponent implements OnInit {
     })
     this.ref.onClose.pipe(filter(result => result)).subscribe((territory: Territory) => {
       polygon.disableEdit();
-      polygon.setStyle(territory.styles);
-      polygon.bindTooltip(territory.name);
+      polygon.setStyle(territory.details.styles);
+      polygon.bindTooltip(territory.details.name);
 
       this._messageService.add({ severity: 'success', detail: 'Оновлення території було успішним!' })
       this._unSelect();
@@ -215,13 +216,14 @@ export class MapComponent implements OnInit {
 
   private _initTerritories(territories: Territory[]): void {
     territories.forEach(t => {
-      t.coords = t.coords.map(c => c.reverse());
-      const polygon = L.polygon(t.coords as any);
-      if (Object.keys(t.styles).length) {
-        polygon.setStyle(t.styles);
+      console.log(t)
+      t.details.coords = t.details.coords.map(c => c.reverse());
+      const polygon = L.polygon(t.details.coords as any);
+      if (Object.keys(t.details.styles).length) {
+        polygon.setStyle(t.details.styles);
       }
 
-      polygon.bindTooltip(t.name);
+      polygon.bindTooltip(t.details.name);
 
       polygon.addTo(this.map);
 

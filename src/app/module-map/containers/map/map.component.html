@@ -48,13 +48,13 @@
   header="Новини"
   position="bottom-right"
   [(visible)]="displayPosts"
-  [title]="selectedTerritory?.name"
+  [title]="selectedTerritory?.details?.name"
 >
   <app-post [territoryId]="selectedTerritory?.id"></app-post>
 </p-dialog>
 
 <p-dialog
-  [header]="selectedTerritory?.name || 'Не збережена територія'"
+  [header]="selectedTerritory?.details?.name || 'Не збережена територія'"
   position="top"
   [(visible)]="display"
 >
