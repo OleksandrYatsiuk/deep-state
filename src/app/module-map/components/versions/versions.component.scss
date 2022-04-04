@@ -1,0 +1,31 @@
+.versions {
+  li {
+    list-style: none;
+  }
+  &__list {
+    margin: 0.5rem;
+    padding: 0.5rem;
+  }
+  &__item {
+    padding: 0.5rem;
+    border-bottom: 1px solid rgb(212, 207, 207);
+  }
+
+  &__card {
+    cursor: pointer;
+    padding: 0.5rem;
+    // margin-bottom: 0.5rem;
+    transition: all 0.3s;
+    border-radius: 0.5rem;
+    &:hover {
+      background-color: rgba(rgb(196, 192, 192), 0.2);
+    }
+
+    .time {
+      font-weight: 600;
+    }
+    .status {
+      margin: 0 0.5rem;
+    }
+  }
+}

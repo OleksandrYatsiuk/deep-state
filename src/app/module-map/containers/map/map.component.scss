@@ -8,16 +8,21 @@ $c-black: black;
 .map {
   &__options {
     position: absolute;
-    top: 0.5rem;
 
     z-index: 1000;
     display: grid;
     grid-row-gap: 0.5rem;
 
-    &--left {
+    &--topleft {
+      top: 0.5rem;
       left: 0.5rem;
     }
-    &--right {
+    &--topright {
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+    &--bottomright {
+      bottom: 0.5rem;
       right: 0.5rem;
     }
   }
@@ -35,11 +40,10 @@ $c-black: black;
     color: red;
   }
 }
-.logo{
+.logo {
   width: auto;
   height: 65px;
   opacity: 0.7;
   &__container {
-
   }
 }

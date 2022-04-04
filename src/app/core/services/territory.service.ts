@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from "src/environments/environment";
 import { Observable } from "rxjs";
 import { CreateTerritory, Territory, UpdateTerritory } from "../interfaces/territory.interface";
+import { GeoJSONVersion, MapVersion } from "../interfaces/geojson.interface";
 
 @Injectable({ providedIn: 'root' })
 export class TerritoryService {
@@ -29,6 +30,14 @@ export class TerritoryService {
 
     queryTerritory(id: string): Observable<Territory> {
         return this._http.get<Territory>(`${this._path}/${id}`);
+    }
+
+    queryGeoJsonVersions(): Observable<MapVersion[]> {
+        return this._http.get<MapVersion[]>('/assets/mock/versions.json');
+    }
+
+    queryGeoJsonVersion(version: number): Observable<GeoJSONVersion[]> {
+        return this._http.get<GeoJSONVersion[]>(`/assets/mock/versions/${version}.json`);
     }
 
 

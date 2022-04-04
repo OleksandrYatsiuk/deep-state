@@ -12,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AddPostDialogComponent } from './components/add-post-dialog/add-post-dialog.component';
 import { DialogModule } from 'primeng/dialog';
+import { VersionsComponent } from './components/versions/versions.component';
 
 const routes: Routes = [
   { path: '', component: MapComponent }
@@ -22,7 +23,8 @@ const routes: Routes = [
     MapComponent,
     PostComponent,
     EditTerritoryDialogComponent,
-    AddPostDialogComponent
+    AddPostDialogComponent,
+    VersionsComponent
   ],
   imports: [
     CommonModule,

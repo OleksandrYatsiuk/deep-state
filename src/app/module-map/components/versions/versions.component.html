@@ -1,0 +1,17 @@
+<div class="versions">
+  <ul class="versions__list">
+    <li
+      *ngFor="let version of versions$ | async"
+      class="versions__item"
+      (click)="onSelectVersion(version)"
+    >
+      <div class="versions__card">
+        <span class="time"> {{ version.datetime | date: "short" }}</span>
+        <span *ngIf="version.id === selectedVersion.id" class="status">🟢</span>
+        <p class="description">
+          {{ version.description || "Зміни не вказані" }}
+        </p>
+      </div>
+    </li>
+  </ul>
+</div>

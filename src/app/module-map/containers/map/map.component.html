@@ -1,5 +1,5 @@
 <div id="map">
-  <div class="map__options map__options--left">
+  <div class="map__options map__options--topleft">
     <p-autoComplete
       [placeholder]="'Пошук'"
       [suggestions]="results$ | async"
@@ -19,6 +19,11 @@
       label="Всі новини"
       (click)="showAllPosts()"
     ></p-button>
+    <p-button
+      icon="pi pi-copy"
+      label="Історія версій"
+      (click)="showVersions()"
+    ></p-button>
     <a href="https://t.me/DeepStateUA" target="_blank" class="logo__container">
       <img
         src="/assets/images/logo.png"
@@ -27,7 +32,7 @@
       />
     </a>
   </div>
-  <div class="map__options map__options--right">
+  <div class="map__options map__options--topright">
     <button
       pButton
       pRipple
@@ -113,4 +118,12 @@
       </p>
     </div>
   </div>
+</p-dialog>
+<p-dialog
+  [style]="{ 'max-width': '30rem', height: '60vh' }"
+  header="Історія Версій"
+  position="bottom-left"
+  [(visible)]="openVersions"
+>
+  <app-versions (selectVersion)="onChangeVersion($event)"></app-versions>
 </p-dialog>

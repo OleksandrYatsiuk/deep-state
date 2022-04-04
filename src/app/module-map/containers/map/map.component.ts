@@ -11,12 +11,15 @@ import { EditTerritoryDialogComponent } from '../../components/edit-territory-di
 import { filter, Observable } from 'rxjs';
 import { NominatimService } from 'src/app/core/services/nominatim.service';
 import { MessageService } from 'primeng/api';
+import { MapVersion } from 'src/app/core/interfaces/geojson.interface';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DatePipe]
 })
 export class MapComponent implements OnInit {
   map: L.Map;
@@ -24,6 +27,7 @@ export class MapComponent implements OnInit {
   display = false;
   displayPosts = false;
   displayInfo = false;
+  openVersions = false;
 
   selectedPolygon: L.Polygon;
   selectedTerritory: Territory
@@ -41,7 +45,8 @@ export class MapComponent implements OnInit {
     private _dialogService: DialogService,
     private _nominatimService: NominatimService,
     private _title: Title,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _datePipe: DatePipe
   ) { }
 
 
@@ -53,12 +58,8 @@ export class MapComponent implements OnInit {
 
   ngOnInit(): void {
     this._title.setTitle('DeepStateMAP | Мапа війни в Україні');
-    this._territoryService.queryTerritories()
-      .subscribe(territories => {
-        this.map = this._mapService.initMap('map');
-        this._initTerritories(territories);
-        this._cd.detectChanges();
-      });
+    this.map = this._mapService.initMap('map');
+    this._initTerritoriesFromGeoJson(1649005166);
   }
 
   onStartPolygon(): void {
@@ -89,34 +90,6 @@ export class MapComponent implements OnInit {
     });
   }
 
-  private _initTerritories(territories: Territory[]): void {
-    territories.forEach(t => {
-      t.coords = t.coords.map(c => c.reverse());
-      const polygon = L.polygon(t.coords as any);
-      if (Object.keys(t.styles).length) {
-        polygon.setStyle(t.styles);
-      }
-
-      polygon.bindTooltip(t.name);
-
-      polygon.addTo(this.map);
-
-      polygon.on('click', ({ target }: { target: L.Polygon }) => {
-        const pol: L.Polygon = target;
-        this.display = true;
-        this.displayPosts = false;
-        this.selectedTerritory = t;
-        this.selectedPolygon = pol;
-        this._cd.detectChanges();
-
-      })
-
-      polygon.on('mouseover', ({ target }: { target: L.Polygon }) => {
-        this._cd.detectChanges();
-      })
-
-    })
-  }
 
   onEditTerritory(polygon: L.Polygon, territory?: Territory): void {
     this.ref = this._dialogService.open(EditTerritoryDialogComponent, {
@@ -158,6 +131,10 @@ export class MapComponent implements OnInit {
     this.showPosts();
   }
 
+  showVersions(): void {
+    this.openVersions = !this.openVersions;
+  }
+
   showInfo(): void {
     this.displayInfo = !this.displayInfo;
   }
@@ -179,8 +156,89 @@ export class MapComponent implements OnInit {
     this.map.editTools.stopDrawing();
   }
 
+  onChangeVersion(version: MapVersion): void {
+    this.openVersions = false;
+    this._removePolygons();
+    this._initTerritoriesFromGeoJson(version.id);
+    this._messageService.add({
+      severity: 'success',
+      summary: `Версія від ${this._datePipe.transform(version.datetime, 'short')} активована!`,
+      detail: version.description || ''
+    })
+  }
+
   private _unSelect(): void {
     this.selectedPolygon = null;
     this.selectedTerritory = null;
+  }
+
+  private _initTerritoriesFromGeoJson(version = 1): void {
+    this._territoryService.queryGeoJsonVersion(version).subscribe((data: any) => {
+      data.geoJSON = data.geoJSON.features.filter(g => g.geometry.type === 'Polygon' || g.geometry.type === 'GeometryCollection');
+      const geojson = L.geoJSON<L.Polygon>(data.geoJSON).addTo(this.map);
+
+      geojson.eachLayer((polygon: L.Polygon) => {
+        const properties = polygon.feature.properties;
+        const fill = properties.fill;
+        const name = properties.name;
+        polygon.setStyle({ color: fill })
+        polygon.bindTooltip(name);
+
+        polygon.on('click', ({ target }: { target: L.Polygon }) => {
+          const pol: L.Polygon = target;
+          this.display = true;
+          this.displayPosts = false;
+          this.selectedPolygon = pol;
+          this.selectedTerritory = null;
+          this._cd.detectChanges();
+        })
+
+      })
+
+    })
+  }
+
+  private _removePolygons(): void {
+    this.map.eachLayer((layer: L.Layer) => {
+      if (layer instanceof L.Polygon) {
+        layer.remove();
+      }
+    })
+  }
+
+  private _initTerritoriesFromDataBase(): void {
+    this._territoryService.queryTerritories().subscribe(territories => {
+      this._initTerritories(territories);
+      this._cd.detectChanges();
+    });
+  }
+
+  private _initTerritories(territories: Territory[]): void {
+    territories.forEach(t => {
+      t.coords = t.coords.map(c => c.reverse());
+      const polygon = L.polygon(t.coords as any);
+      if (Object.keys(t.styles).length) {
+        polygon.setStyle(t.styles);
+      }
+
+      polygon.bindTooltip(t.name);
+
+      polygon.addTo(this.map);
+
+      polygon.on('click', ({ target }: { target: L.Polygon }) => {
+        const pol: L.Polygon = target;
+        this.display = true;
+        this.displayPosts = false;
+        this.selectedTerritory = t;
+        this.selectedPolygon = pol;
+        this._cd.detectChanges();
+
+      })
+
+      polygon.on('mouseover', ({ target }: { target: L.Polygon }) => {
+        this._cd.detectChanges();
+      })
+
+    })
   }
 }
